@@ -1,0 +1,6 @@
+{
+  "name": "Grade 7 English Reading Comprehension Master",
+  "description": "Interactive English Grade 7 Reading Comprehension test with 10 medium-difficulty questions, instant 10-point scale scoring, evidence highlighting, and English explanations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

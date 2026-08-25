@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@media print {
+  /* Hide non-printable elements */
+  nav,
+  header,
+  aside,
+  .no-print,
+  button,
+  .fixed {
+    display: none !important;
+  }
+
+  /* Show only printable worksheet */
+  body,
+  #root,
+  #printable-worksheet {
+    visibility: visible !important;
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #printable-worksheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+}
