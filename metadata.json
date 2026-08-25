@@ -1,6 +1,6 @@
 {
-  "name": "Grade 7 English Reading Comprehension Master",
-  "description": "Interactive English Grade 7 Reading Comprehension test with 10 medium-difficulty questions, instant 10-point scale scoring, evidence highlighting, and English explanations.",
+  "name": "Grade 10 Entrance Exam Reading Comprehension",
+  "description": "20-question English reading comprehension tests for Grade 10 entrance exam with 10.0 scale scoring, instant feedback, evidence finder, and AI test generator.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Question } from '../types/reading';
-import { Bookmark, CheckCircle2, XCircle, Info, Sparkles, HelpCircle } from 'lucide-react';
+import { Bookmark, CheckCircle2, XCircle, Info, Sparkles } from 'lucide-react';
 
 interface QuestionCardProps {
   question: Question;
+  totalQuestions?: number;
   selectedAnswer?: 'A' | 'B' | 'C' | 'D';
   isFlagged: boolean;
   isSubmitted: boolean;
@@ -15,6 +16,7 @@ interface QuestionCardProps {
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
   question,
+  totalQuestions = 20,
   selectedAnswer,
   isFlagged,
   isSubmitted,
@@ -27,13 +29,16 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   const isCorrect = selectedAnswer === question.correctAnswer;
 
   const skillLabels: Record<string, { label: string; color: string }> = {
-    'main-idea': { label: 'Main Idea', color: 'bg-purple-100 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300' },
+    'main-idea': { label: 'Main Idea & Title', color: 'bg-purple-100 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300' },
     'factual-detail': { label: 'Factual Detail', color: 'bg-blue-100 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300' },
     'vocabulary': { label: 'Vocabulary in Context', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300' },
-    'pronoun-reference': { label: 'Reference', color: 'bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300' },
-    'inference': { label: 'Inference', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300' },
+    'synonym-antonym': { label: 'Synonym / Antonym', color: 'bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300' },
+    'pronoun-reference': { label: 'Reference', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300' },
+    'inference': { label: 'Logical Inference', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950/80 dark:text-cyan-300' },
     'negative-fact': { label: 'Negative Fact (NOT)', color: 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300' },
-    'author-purpose': { label: "Author's Purpose", color: 'bg-teal-100 text-teal-700 dark:bg-teal-950/80 dark:text-teal-300' }
+    'author-purpose': { label: "Author's Purpose", color: 'bg-teal-100 text-teal-700 dark:bg-teal-950/80 dark:text-teal-300' },
+    'tone': { label: 'Tone & Attitude', color: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-950/80 dark:text-fuchsia-300' },
+    'text-structure': { label: 'Text Structure', color: 'bg-orange-100 text-orange-700 dark:bg-orange-950/80 dark:text-orange-300' }
   };
 
   const currentSkill = skillLabels[question.skillType] || {
@@ -58,7 +63,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.questionNumber}
           </span>
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Question {question.questionNumber} of 10
+            Question {question.questionNumber} of {totalQuestions}
           </span>
           <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${currentSkill.color}`}>
             {currentSkill.label}
@@ -90,7 +95,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               }`}
             >
               {isCorrect ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-              <span>{isCorrect ? '+1.0 pt (Correct)' : '0.0 pt (Incorrect)'}</span>
+              <span>{isCorrect ? '+0.5 pt (Correct)' : '0.0 pt (Incorrect)'}</span>
             </span>
           )}
         </div>
@@ -165,7 +170,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       {showFeedback && (
         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
                 <Info className="w-4 h-4" />
                 <span>English Explanation:</span>
@@ -173,19 +178,19 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               <button
                 type="button"
                 onClick={() => onHighlightEvidence(question.evidenceParagraph, question.evidenceQuote)}
-                className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-200 transition"
+                className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-200 transition cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Show in Paragraph {question.evidenceParagraph}</span>
+                <span>Highlight in Paragraph {question.evidenceParagraph}</span>
               </button>
             </div>
             <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
               {question.explanation}
             </p>
             {question.evidenceQuote && (
-              <div className="text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900/80 p-2 rounded-lg border border-slate-200/60 dark:border-slate-800">
-                <strong className="text-slate-700 dark:text-slate-300">Evidence from text (¶ {question.evidenceParagraph}): </strong>
-                <em>"{question.evidenceQuote}"</em>
+              <div className="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900/80 p-2.5 rounded-lg border border-slate-200/60 dark:border-slate-800">
+                <strong className="text-slate-800 dark:text-slate-200">Evidence from text (¶ {question.evidenceParagraph}): </strong>
+                <em className="text-indigo-700 dark:text-indigo-300">"{question.evidenceQuote}"</em>
               </div>
             )}
           </div>

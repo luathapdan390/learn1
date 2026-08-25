@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { GRADE_7_READING_TESTS } from './data/grade7Tests';
-import { ReadingTest, StudentAnswers, FlaggedQuestions, TestResult, QuestionType } from './types/reading';
+import React, { useState, useEffect } from 'react';
+import { GRADE_10_ENTRANCE_TESTS } from './data/grade10Tests';
+import { ReadingTest, StudentAnswers, FlaggedQuestions, TestResult } from './types/reading';
 import { WordDefinition } from './services/dictionaryService';
 import { Navbar } from './components/Navbar';
 import { PassageViewer } from './components/PassageViewer';
@@ -11,12 +11,12 @@ import { PrintWorksheetModal } from './components/PrintWorksheetModal';
 import { VocabularyModal } from './components/VocabularyModal';
 import { CustomTestGeneratorModal } from './components/CustomTestGeneratorModal';
 import { DictionaryPopup } from './components/DictionaryPopup';
-import { AlertCircle, CheckCircle2, Trophy, RotateCcw, ArrowRight, Layers, Eye } from 'lucide-react';
+import { AlertCircle, Trophy, RotateCcw, Sparkles } from 'lucide-react';
 
 export default function App() {
   // Test collection state
-  const [allTests, setAllTests] = useState<ReadingTest[]>(GRADE_7_READING_TESTS);
-  const [currentTestId, setCurrentTestId] = useState<string>(GRADE_7_READING_TESTS[0].id);
+  const [allTests, setAllTests] = useState<ReadingTest[]>(GRADE_10_ENTRANCE_TESTS);
+  const [currentTestId, setCurrentTestId] = useState<string>(GRADE_10_ENTRANCE_TESTS[0].id);
 
   // Active test
   const currentTest = allTests.find((t) => t.id === currentTestId) || allTests[0];
@@ -116,7 +116,7 @@ export default function App() {
     }));
   };
 
-  // Submit test and calculate 10-point scale score
+  // Submit test and calculate 10-point scale score (e.g. 20 questions * 0.5 = 10.0 scale)
   const executeSubmit = () => {
     let correctCount = 0;
     const skillBreakdown: TestResult['skillBreakdown'] = {};
@@ -137,7 +137,8 @@ export default function App() {
       }
     });
 
-    // Score on 10-point scale: exactly 1.0 point per correct answer (10 questions total)
+    // Score on 10-point scale: exactly (correctCount / totalCount) * 10
+    const pointsPerQ = currentTest.pointsPerQuestion || 0.5;
     const scoreScale10 = Number(((correctCount / currentTest.questions.length) * 10).toFixed(1));
     const percentage = Math.round((correctCount / currentTest.questions.length) * 100);
 
@@ -146,6 +147,7 @@ export default function App() {
       totalQuestions: currentTest.questions.length,
       correctAnswersCount: correctCount,
       scoreScale10,
+      pointsPerQuestion: pointsPerQ,
       percentage,
       timeSpentSeconds: timerSeconds,
       completedAt: new Date().toISOString(),
@@ -232,19 +234,19 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
         {/* Results Banner when Submitted */}
         {isSubmitted && testResult && (
-          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 text-white shadow-lg flex flex-wrap items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-700 text-white shadow-lg flex flex-wrap items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
                 <Trophy className="w-6 h-6 text-yellow-300" />
               </div>
               <div>
                 <span className="text-xs font-semibold text-indigo-200 uppercase tracking-wider block">
-                  Test Completed • Score on 10.0 Scale
+                  Grade 10 Exam Completed • Official 10.0 Scale Score
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-black">{testResult.scoreScale10.toFixed(1)} / 10.0</span>
                   <span className="text-xs text-indigo-100 font-medium">
-                    ({testResult.correctAnswersCount}/10 correct • {testResult.percentage}%)
+                    ({testResult.correctAnswersCount}/{currentTest.questions.length} correct • {testResult.percentage}%)
                   </span>
                 </div>
               </div>
@@ -253,14 +255,14 @@ export default function App() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsScoreModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-bold text-xs shadow transition flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-bold text-xs shadow transition flex items-center gap-1.5 cursor-pointer"
               >
                 <Trophy className="w-3.5 h-3.5" />
                 <span>View Full Score Report</span>
               </button>
               <button
                 onClick={handleResetTest}
-                className="px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs transition flex items-center gap-1"
+                className="px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Retake</span>
@@ -286,13 +288,13 @@ export default function App() {
 
           {/* Right Column: Questions & Navigator (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-5">
-            {/* View Mode Toggle: Single Question vs All 10 Questions */}
-            <div className="flex items-center justify-between pb-1">
+            {/* View Mode Toggle: Single Question vs All Questions */}
+            <div className="flex items-center justify-between pb-1 flex-wrap gap-2">
               <div className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span>Display:</span>
                 <button
                   onClick={() => setViewMode('single')}
-                  className={`px-2.5 py-1 rounded-lg transition ${
+                  className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
                     viewMode === 'single'
                       ? 'bg-indigo-600 text-white font-bold'
                       : 'hover:bg-slate-200 dark:hover:bg-slate-800'
@@ -302,13 +304,13 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setViewMode('all')}
-                  className={`px-2.5 py-1 rounded-lg transition ${
+                  className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
                     viewMode === 'all'
                       ? 'bg-indigo-600 text-white font-bold'
                       : 'hover:bg-slate-200 dark:hover:bg-slate-800'
                   }`}
                 >
-                  All 10 Questions
+                  All {currentTest.questions.length} Questions
                 </button>
               </div>
 
@@ -318,7 +320,7 @@ export default function App() {
                     setHighlightedParagraph(null);
                     setHighlightedQuote(null);
                   }}
-                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium cursor-pointer"
                 >
                   Clear evidence highlight
                 </button>
@@ -329,6 +331,7 @@ export default function App() {
             {viewMode === 'single' ? (
               <QuestionCard
                 question={currentTest.questions[currentQuestionIndex]}
+                totalQuestions={currentTest.questions.length}
                 selectedAnswer={answers[currentTest.questions[currentQuestionIndex].id]}
                 isFlagged={!!flagged[currentTest.questions[currentQuestionIndex].id]}
                 isSubmitted={isSubmitted}
@@ -341,10 +344,11 @@ export default function App() {
               />
             ) : (
               <div className="space-y-4">
-                {currentTest.questions.map((q, idx) => (
+                {currentTest.questions.map((q) => (
                   <QuestionCard
                     key={q.id}
                     question={q}
+                    totalQuestions={currentTest.questions.length}
                     selectedAnswer={answers[q.id]}
                     isFlagged={!!flagged[q.id]}
                     isSubmitted={isSubmitted}
@@ -401,13 +405,13 @@ export default function App() {
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setSubmitConfirmOpen(false)}
-                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 Keep Answering
               </button>
               <button
                 onClick={executeSubmit}
-                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow transition"
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow transition cursor-pointer"
               >
                 Submit & Calculate Score
               </button>

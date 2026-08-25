@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ReadingTest } from '../types/reading';
-import { Printer, X, Eye, EyeOff, FileText, CheckCircle2 } from 'lucide-react';
+import { Printer, X, FileText } from 'lucide-react';
 
 interface PrintWorksheetModalProps {
   test: ReadingTest;
@@ -31,10 +31,10 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
             <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             <div>
               <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Print Test Paper / Worksheet
+                Print Test Paper / Worksheet (20 Questions)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Format ready for classroom testing, homework, or exam practice.
+                Grade 10 High School Entrance Exam Standard Format • 10.0 Scale
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
 
             <button
               onClick={handlePrint}
-              className="py-1.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition flex items-center gap-1.5"
+              className="py-1.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition flex items-center gap-1.5 cursor-pointer"
             >
               <Printer className="w-4 h-4" />
               <span>Print Now</span>
@@ -72,7 +72,7 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -86,10 +86,13 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="text-xl font-bold uppercase tracking-wider">
-                  ENGLISH READING COMPREHENSION TEST
+                  HIGH SCHOOL ENTRANCE EXAMINATION (GRADE 10)
                 </h1>
-                <p className="text-sm font-sans font-medium text-gray-600">
-                  Grade 7 • Time Allowance: 20 Minutes • Total Score: 10.0 pts
+                <p className="text-sm font-sans font-bold text-gray-800">
+                  Subject: English • Reading Comprehension Paper
+                </p>
+                <p className="text-xs font-sans font-medium text-gray-600 mt-0.5">
+                  Time Allowance: 35 Minutes • 20 Multiple Choice Questions (0.5 pts each) • Total: 10.0 pts
                 </p>
               </div>
               <div className="border-2 border-black p-2 min-w-[120px] text-center font-sans">
@@ -99,40 +102,41 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
             </div>
 
             <div className="grid grid-cols-3 gap-4 mt-4 text-xs font-sans">
-              <div><strong>Student Name:</strong> ....................................................</div>
-              <div><strong>Class:</strong> .........................</div>
-              <div><strong>Date:</strong> .........................</div>
+              <div><strong>Candidate Name:</strong> ....................................................</div>
+              <div><strong>Candidate ID:</strong> .........................</div>
+              <div><strong>Exam Room:</strong> .........................</div>
             </div>
           </div>
 
           {/* Reading Passage Section */}
           <div className="space-y-3">
-            <div className="bg-gray-100 p-2 text-xs font-sans font-bold uppercase tracking-wide border border-gray-300">
-              SECTION I: READING PASSAGE
+            <div className="bg-gray-100 p-2 text-xs font-sans font-bold uppercase tracking-wide border border-gray-300 flex items-center justify-between">
+              <span>SECTION I: READING PASSAGE</span>
+              <span className="text-gray-600 font-normal">({test.wordCount} words)</span>
             </div>
             <h2 className="text-lg font-bold text-center italic">{test.title}</h2>
             <div className="space-y-3 text-sm leading-relaxed text-justify">
               {test.paragraphs.map((p, idx) => (
                 <p key={idx}>
-                  <strong className="font-sans text-xs mr-1">[Paragraph {idx + 1}]</strong> {p}
+                  <strong className="font-sans text-xs mr-1">[Paragraph {idx + 1}]</strong> {p.replace(/^\[Paragraph \d+\]\s*/, '')}
                 </p>
               ))}
             </div>
           </div>
 
-          {/* 10 Multiple Choice Questions */}
+          {/* 20 Multiple Choice Questions */}
           <div className="space-y-4 pt-2">
             <div className="bg-gray-100 p-2 text-xs font-sans font-bold uppercase tracking-wide border border-gray-300">
-              SECTION II: COMPREHENSION QUESTIONS (10 QUESTIONS - 1.0 PT EACH)
+              SECTION II: COMPREHENSION QUESTIONS (20 QUESTIONS - 0.5 PT EACH = 10.0 PTS)
             </div>
             <p className="text-xs font-sans italic text-gray-700">
-              Directions: Read the passage carefully and choose the best answer (A, B, C, or D) for each question.
+              Directions: Read the passage carefully and choose the correct letter (A, B, C, or D) for questions 1 to 20.
             </p>
 
             <div className="space-y-4 text-sm font-sans">
               {test.questions.map((q) => (
                 <div key={q.id} className="space-y-1.5 break-inside-avoid">
-                  <p className="font-bold">
+                  <p className="font-bold text-xs sm:text-sm">
                     Question {q.questionNumber}: {q.questionText}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pl-4 text-xs font-normal">
@@ -152,20 +156,20 @@ export const PrintWorksheetModal: React.FC<PrintWorksheetModalProps> = ({
           {includeAnswerKey && (
             <div className="pt-6 border-t-2 border-dashed border-gray-400 space-y-3 break-before-page">
               <div className="bg-gray-100 p-2 text-xs font-sans font-bold uppercase tracking-wide border border-gray-300">
-                TEACHER'S ANSWER KEY & SCORING GUIDE (10.0 SCALE)
+                TEACHER'S OFFICIAL ANSWER KEY & SCORING MATRIX (10.0 SCALE)
               </div>
-              <div className="grid grid-cols-5 gap-2 text-xs font-sans">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 text-xs font-sans">
                 {test.questions.map((q) => (
                   <div key={q.id} className="border p-2 rounded text-center">
                     <span className="font-bold">Q{q.questionNumber}: </span>
-                    <strong className="text-blue-700 font-black">{q.correctAnswer}</strong> (1.0 pt)
+                    <strong className="text-blue-700 font-black">{q.correctAnswer}</strong> (0.5 pt)
                   </div>
                 ))}
               </div>
 
               {includeExplanations && (
                 <div className="space-y-2 text-xs font-sans text-gray-700 mt-3">
-                  <h4 className="font-bold">Detailed Explanations & Evidence:</h4>
+                  <h4 className="font-bold">Detailed English Explanations & Evidence:</h4>
                   {test.questions.map((q) => (
                     <div key={q.id} className="border-b pb-1.5">
                       <strong>Q{q.questionNumber} ({q.correctAnswer}):</strong> {q.explanation}

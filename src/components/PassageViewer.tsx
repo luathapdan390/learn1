@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ReadingTest } from '../types/reading';
-import { BookOpen, Volume2, VolumeX, Sparkles, HelpCircle, Eye } from 'lucide-react';
+import { BookOpen, Volume2, VolumeX, Sparkles, Eye, GraduationCap } from 'lucide-react';
 import { lookupWord, WordDefinition } from '../services/dictionaryService';
 
 interface PassageViewerProps {
@@ -47,7 +47,7 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
     const fullText = test.paragraphs.join('. ');
     const utterance = new SpeechSynthesisUtterance(fullText);
     utterance.lang = 'en-US';
-    utterance.rate = 0.9; // clear, comfortable pace for Grade 7
+    utterance.rate = 0.92;
 
     utterance.onend = () => setIsPlayingAudio(false);
     utterance.onerror = () => setIsPlayingAudio(false);
@@ -117,7 +117,7 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
           key={i}
           onClick={(e) => handleWordSpanClick(e, token)}
           className="hover:bg-indigo-100 dark:hover:bg-indigo-900/60 hover:text-indigo-700 dark:hover:text-indigo-300 cursor-pointer rounded px-0.5 transition-colors duration-150 inline-block"
-          title="Click to see English meaning"
+          title="Click to see English definition"
         >
           {token}
         </span>
@@ -132,12 +132,12 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
       {/* Passage Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200/60 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300">
-              <BookOpen className="w-3 h-3" />
-              Reading Passage • Grade 7
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800">
+              <GraduationCap className="w-3.5 h-3.5" />
+              Grade 10 Entrance Exam
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
               Difficulty: {test.difficulty}
             </span>
           </div>
@@ -145,7 +145,7 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
             {test.title}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Topic: <span className="font-semibold">{test.topic}</span> • {test.wordCount} words
+            Topic: <span className="font-semibold">{test.topic}</span> • {test.wordCount} words • {test.paragraphs.length} paragraphs
           </p>
         </div>
 
@@ -153,12 +153,12 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={toggleAudioSpeech}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition shadow-sm ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition shadow-sm cursor-pointer ${
               isPlayingAudio
                 ? 'bg-rose-50 border-rose-300 text-rose-700 dark:bg-rose-950/60 dark:border-rose-800 dark:text-rose-300 animate-pulse'
                 : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/80'
             }`}
-            title={isPlayingAudio ? 'Stop reading' : 'Read passage aloud'}
+            title={isPlayingAudio ? 'Stop reading' : 'Read passage aloud (English pronunciation)'}
           >
             {isPlayingAudio ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             <span>{isPlayingAudio ? 'Stop Audio' : 'Read Aloud'}</span>
@@ -171,7 +171,7 @@ export const PassageViewer: React.FC<PassageViewerProps> = ({
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
           <span>
-            <strong className="font-semibold">Reading Tip:</strong> Click any word in the text to see its English definition!
+            <strong className="font-semibold">Interactive Feature:</strong> Click any word in the passage to look up its English definition!
           </span>
         </div>
         {highlightedParagraph !== null && (

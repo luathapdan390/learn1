@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ReadingTest } from '../types/reading';
-import { generateGrade7ReadingTest } from '../services/geminiService';
-import { Sparkles, X, Wand2, Loader2, BookOpen, AlertCircle } from 'lucide-react';
+import { generateGrade10ReadingTest } from '../services/geminiService';
+import { Sparkles, X, Wand2, Loader2, AlertCircle, GraduationCap } from 'lucide-react';
 
 interface CustomTestGeneratorModalProps {
   isOpen: boolean;
@@ -21,17 +21,17 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
   if (!isOpen) return null;
 
   const popularTopics = [
-    'Traditional Vietnamese Folk Games for Children',
-    'Robots and Artificial Intelligence in School',
-    'Saving Endangered Sea Turtles and Ocean Life',
-    'Space Exploration and Life on the Moon',
-    'Renewable Solar and Wind Energy for Future Cities'
+    'Urban Green Spaces and Climate Resilience in Modern Cities',
+    'The Evolution of Renewable Solar and Wind Energy in Southeast Asia',
+    'Preserving Endangered Marine Life and Coral Reefs',
+    'The Impact of E-commerce and Digital Payments on Teen Habits',
+    'Space Exploration and Satellite Technology in Everyday Life'
   ];
 
   const handleGenerate = async (selectedTopic?: string) => {
     const finalTopic = selectedTopic || topic;
     if (!finalTopic.trim()) {
-      setError('Please enter or select a topic for the reading test.');
+      setError('Please enter or select a topic for the 20-question reading test.');
       return;
     }
 
@@ -39,7 +39,7 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
     setError(null);
 
     try {
-      const generatedTest = await generateGrade7ReadingTest(finalTopic);
+      const generatedTest = await generateGrade10ReadingTest(finalTopic);
       onTestGenerated(generatedTest);
       onClose();
     } catch (err: any) {
@@ -54,17 +54,17 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden my-6">
         {/* Header */}
-        <div className="p-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-between">
+        <div className="p-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-white/15 backdrop-blur-sm">
-              <Wand2 className="w-5 h-5 text-white" />
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
               <h3 className="font-bold text-lg leading-tight">
-                Generate Custom Grade 7 Test
+                Generate Grade 10 Reading Test
               </h3>
               <p className="text-xs text-purple-100 mt-0.5">
-                AI-crafted 10-question medium reading test
+                AI-crafted 20-question exam test • 10.0 scale • Medium difficulty
               </p>
             </div>
           </div>
@@ -72,7 +72,7 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition disabled:opacity-40"
+            className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition disabled:opacity-40 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -82,13 +82,13 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
         <div className="p-6 space-y-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-              Enter Topic or Theme:
+              Enter Reading Topic / Theme:
             </label>
             <input
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. Sports Day at School, Wildlife Conservation..."
+              placeholder="e.g. Clean Energy, Biodiversity, Digital Society..."
               disabled={loading}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
             />
@@ -97,7 +97,7 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
           {/* Quick Suggestions */}
           <div>
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">
-              Or pick a popular Grade 7 topic:
+              Or choose a popular Grade 10 Entrance Exam topic:
             </span>
             <div className="space-y-1.5">
               {popularTopics.map((t, idx) => (
@@ -109,7 +109,7 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
                     setTopic(t);
                     handleGenerate(t);
                   }}
-                  className="w-full text-left p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-purple-50 dark:bg-slate-800/60 dark:hover:bg-purple-950/40 text-slate-700 dark:text-slate-200 text-xs font-medium transition flex items-center justify-between group disabled:opacity-40"
+                  className="w-full text-left p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-purple-50 dark:bg-slate-800/60 dark:hover:bg-purple-950/40 text-slate-700 dark:text-slate-200 text-xs font-medium transition flex items-center justify-between group disabled:opacity-40 cursor-pointer"
                 >
                   <span className="truncate pr-2">{t}</span>
                   <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600 transition shrink-0" />
@@ -129,17 +129,17 @@ export const CustomTestGeneratorModal: React.FC<CustomTestGeneratorModalProps> =
             <button
               onClick={() => handleGenerate()}
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Generating Grade 7 Test (10 Questions)...</span>
+                  <span>Generating 20-Question Exam Test...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  <span>Generate Test Now</span>
+                  <span>Generate 20-Question Exam Now</span>
                 </>
               )}
             </button>

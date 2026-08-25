@@ -2,10 +2,13 @@ export type QuestionType =
   | 'main-idea' 
   | 'factual-detail' 
   | 'vocabulary' 
+  | 'synonym-antonym'
   | 'pronoun-reference' 
   | 'inference' 
   | 'negative-fact' 
-  | 'author-purpose';
+  | 'author-purpose'
+  | 'tone'
+  | 'text-structure';
 
 export interface Question {
   id: number;
@@ -30,17 +33,24 @@ export interface VocabularyItem {
   exampleSentence: string;
 }
 
+export interface PassageSection {
+  sectionTitle?: string;
+  paragraphs: string[];
+}
+
 export interface ReadingTest {
   id: string;
   title: string;
+  subtitle?: string;
   topic: string;
-  difficulty: 'Medium' | 'Medium-Advanced' | 'Standard Grade 7';
+  difficulty: 'Medium' | 'Standard Grade 10 Entrance' | 'Medium-Challenging';
   wordCount: number;
-  gradeLevel: 'Grade 7';
+  gradeLevel: 'Grade 10 Entrance Exam' | 'Grade 7' | 'Grade 9 - 10';
   summary: string;
   paragraphs: string[];
   vocabularyList: VocabularyItem[];
-  questions: Question[]; // Exactly 10 questions
+  questions: Question[]; // Exactly 20 questions for Grade 10 Entrance Exam
+  pointsPerQuestion?: number; // e.g. 0.5 pts per question (20 * 0.5 = 10.0 pts)
 }
 
 export interface StudentAnswers {
@@ -55,7 +65,8 @@ export interface TestResult {
   testId: string;
   totalQuestions: number;
   correctAnswersCount: number;
-  scoreScale10: number; // e.g. 8.0 / 10.0
+  scoreScale10: number; // e.g. 8.5 / 10.0 (each question is worth 0.5 pts)
+  pointsPerQuestion: number;
   percentage: number;
   timeSpentSeconds: number;
   completedAt: string;
